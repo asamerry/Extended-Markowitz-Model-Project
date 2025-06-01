@@ -18,13 +18,13 @@ def model() -> None:
     x = cp.Variable(num_stocks)
     f = cp.quad_form(x, Sigma_hat)
 
-    print("-="*40 + "-")
+    print("\n" + "-="*40 + "-")
     print(f"Min Return: {min(mu_hat)}; Max Return: {max(mu_hat)}")
-    print("-="*40 + "-")
+    print("-="*40 + "-\n")
 
     objective_values = []
     
-    r_range = np.linspace(min(mu_hat), max(mu_hat))
+    r_range = np.linspace(min(mu_hat)+1e-3, max(mu_hat), 50)
     for r in r_range:
         g = [
             mu_hat.T @ x == r, 
@@ -34,10 +34,12 @@ def model() -> None:
         prob = cp.Problem(cp.Minimize(f), g)
         prob.solve()
         if prob.status == "optimal":
-            print(f"r-value: {r}; Status: {prob.status}")
-            print(f"Objective: {prob.value}; x: {x.value}")
+            #print(f"r-value: {r}; Status: {prob.status}")
+            #print(f"Objective: {prob.value}; x: {x.value}")
             x_val = np.array([x.value]).T
             objective_values.append(x_val.T @ (Sigma_hat @ x_val))
+        else:
+            print(f"Problem {prob.status} for {r=}")
     
     if True:
         plt.figure(figsize=(12, 6))

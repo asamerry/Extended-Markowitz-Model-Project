@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import os, glob
 
 def import_data() -> tuple[dict[str, list[float]], int]:
-    files = glob.glob("data/*.csv")
+    files = glob.glob("data/Full-Time/*.csv")
     prices = pd.DataFrame({ os.path.basename(file).split('.')[0]: pd.read_csv(file, index_col="Date", parse_dates=True, date_format="%m/%Y")["Close"] for file in files })
     return prices, len(files)
 
